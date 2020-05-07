@@ -2,15 +2,16 @@ package gocron
 
 import "time"
 
-
 type taskFunc func() error
 
 type scheduler struct {
-	name  string
-	fc  taskFunc
-	pre  time.Time
-	next  time.Time
-	running bool
+	Name         string
+	Fc           taskFunc
+	Pre          time.Time
+	Next         time.Time
+	SuccessCount uint64
+	FailureCount uint64
+	Running      bool
 }
 
 func newSchedule(name string, f taskFunc) *scheduler {
@@ -18,15 +19,17 @@ func newSchedule(name string, f taskFunc) *scheduler {
 }
 
 func (s *scheduler) init(name string, f taskFunc) *scheduler {
-	s.name = name
-	s.fc = f
+	s.Name = name
+	s.Fc = f
 	return s
 }
 
 func (s *scheduler) Reset() {
-	s.name = ""
-	s.fc = nil
-	s.pre = time.Time{}
-	s.next = time.Time{}
-	s.running = false
+	s.Name = ""
+	s.Fc = nil
+	s.Pre = time.Time{}
+	s.Next = time.Time{}
+	s.SuccessCount = 0
+	s.FailureCount = 0
+	s.Running = false
 }
