@@ -1,12 +1,13 @@
 package gocron
 
 import (
-	"errors"
 	"fmt"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -14,12 +15,15 @@ const (
 	expressL = 6
 )
 
-var symbol = [5]string{
+var symbol = [8]string{
 	"*",
 	",",
 	"/",
 	"-",
 	"?",
+	"L",
+	"W",
+	"#",
 }
 
 var (
@@ -183,12 +187,12 @@ func (p *parser) fieldParse(block string, r bound) ([]uint, error) {
 								if p.mustDigital(value) {
 									number, err := p.digitalBound(block, value, r.min, r.max)
 									if err != nil {
-										return []uint{}, err
+										return u, err
 									}
 
 									number += step
 									if number < r.min || number > r.max {
-										return []uint{}, fmt.Errorf("field: %s plus step value: %d, must be in the range [%d, %d], but now it is: %d", ss[0], step, r.min, r.max, number)
+										return u, fmt.Errorf("field: %s plus step value: %d, must be in the range [%d, %d], but now it is: %d", ss[0], step, r.min, r.max, number)
 									}
 
 									u = append(u, number)
@@ -251,11 +255,14 @@ func (p *parser) fieldParse(block string, r bound) ([]uint, error) {
 	return u, nil
 }
 
+// mustDigital is used to determine whether the string is an integer value and
+// returns bool type
 func (p *parser) mustDigital(s string) bool {
 	_, err := strconv.Atoi(s)
 	return err == nil
 }
 
+// parseStringUint64 converts the string to uint64
 func (p *parser) parseStringUint64(s string) (uint64, error) {
 	return strconv.ParseUint(s, 10, 64)
 }
@@ -278,11 +285,14 @@ func (p *parser) baseAssemble(block, start, end string, min, max uint, step ...u
 			return data, fmt.Errorf("express: %s ==> start: [%d] must be less than or equal to end: [%d]", block, ns, ne)
 		}
 
+		var _step uint
 		if len(step) > 0 {
-			ns += step[0]
-			ne += step[0]
+			_step = step[0]
+		} else {
+			_step = 1
 		}
-		for i := ns; i <= ne; i++ {
+
+		for i := ns; i <= ne; i += _step {
 			if i < min || i > max {
 				return data, fmt.Errorf("field: \"%s\" of character: \"%d\"(%d+%d) out of bounds, must be in the range [%d, %d]", block, i, temp, step[0], min, max)
 			}
@@ -306,6 +316,9 @@ func (p *parser) digitalBound(field, character string, min, max uint) (uint, err
 	return 0, fmt.Errorf("field: \"%s\" of character: \"%s\" out of bounds, must be in range [%d, %d]", field, character, min, max)
 }
 
+// getLocation returns the Location structure pointer according to the time zone
+// name, otherwise returns the Location structure pointer of the server (local)
+// time zone
 func (p *parser) getLocation(name ...string) (location *time.Location, err error) {
 	if len(name) > 0 {
 		location, err = time.LoadLocation(name[0])

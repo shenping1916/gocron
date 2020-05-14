@@ -47,8 +47,10 @@ func Test_parser_parse(t *testing.T) {
 			expr string
 			name []string
 			//}{expr: "1,3-6/21 0,5,10,15-18,20,25,55-59,35,40,45-46,50,30 20-23 1,2,3-6,7,8", name: nil}, want: nil, wantErr: false},
-		}{expr: "* 20,5,10,50,15,25,55-58,35,40,0,45,30 6-12,15,18-22 1-3,7,8-9/2 1,5-7/4 1-4", name: nil}, want: nil, wantErr: false},
-		//}{expr: "0 0,10 17-22 * * 0,2-5/1", name: nil}, want: nil, wantErr: false},
+			//}{expr: "* 20,5,10,50,15,25,55-58,35,40,0,45,30 6-12,15,18-22 1-3,7,8-9/2 1,5-7/2 1-4", name: nil}, want: nil, wantErr: false},
+			//}{expr: "0 0,10 17-22 * * 0,2-5/1", name: nil}, want: nil, wantErr: false},
+			//}{expr: "0/6 */7 */2 * 1/2 *", name: nil}, want: nil, wantErr: false},
+		}{expr: "0 0,10 17 * * 0,2,3", name: nil}, want: nil, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

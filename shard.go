@@ -9,12 +9,11 @@ import (
 const (
 	// Maximum number of shards
 	// default: 1024
-	MaxShard uint16 = 1<<10
+	MaxShard uint16 = 1 << 10
 )
 
 type shard struct {
 	contain container
-	sha string
 }
 
 type contain struct {

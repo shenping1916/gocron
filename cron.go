@@ -1,5 +1,7 @@
 package gocron
 
+import "time"
+
 type Croner interface {
 	AddCron(string, string, taskFunc) error
 	ModifyCron(string, ...interface{}) error
@@ -9,12 +11,16 @@ type Croner interface {
 }
 
 type cron struct {
-	shard [MaxShard]*shard
-	hash  fnv64a
+	ticker *time.Timer
+	shard  [MaxShard]*shard
+	hash   fnv64a
 }
+
+var _ Croner = (*cron)(nil)
 
 func NewCron() Croner {
 	cr := &cron{}
+	cr.ticker = time.NewTimer(1 * time.Second)
 	cr.hash = newDefaultHasher()
 
 	var i = MaxShard
@@ -22,6 +28,19 @@ func NewCron() Croner {
 		cr.shard[i] = newShard()
 	}
 	return cr
+}
+
+func (c *cron) Run() {
+	for {
+		select {
+		case <-c.ticker.C:
+
+		}
+	}
+}
+
+func (c *cron) Close() {
+	c.ticker.Stop()
 }
 
 func (c *cron) getShardIndex(hashKey uint64) uint64 {
