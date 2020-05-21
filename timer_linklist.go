@@ -1,5 +1,7 @@
 package gocron
 
+import "sync"
+
 type array []*scheduler
 
 func (a array) insert(s *scheduler) {
@@ -7,10 +9,10 @@ func (a array) insert(s *scheduler) {
 }
 
 type linkList struct {
+	sync.Mutex
 	prev *scheduler
 	next *scheduler
-
-	ga []*array
+	ga   []*array
 }
 
 func newLinkList() *linkList {

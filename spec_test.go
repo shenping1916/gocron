@@ -6,8 +6,8 @@ import (
 )
 
 func Test_spec_nexTime(t *testing.T) {
-	now := time.Now()
-	//now := time.Unix(1589491801, 0)
+	//now := time.Now()
+	now := time.Unix(1592150401, 0)
 	type fields struct {
 		Second []uint
 		Minute []uint
@@ -44,11 +44,11 @@ func Test_spec_nexTime(t *testing.T) {
 				//Month:  []uint{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
 				//Week:   []uint{0, 1, 2, 3, 4, 5, 6},
 				Second: []uint{0},
-				Minute: []uint{0, 10},
-				Hour:   []uint{17},
-				Day:    []uint{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31},
+				Minute: []uint{0},
+				Hour:   []uint{0},
+				Day:    []uint{1, 15},
 				Month:  []uint{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12},
-				Week:   []uint{0, 2, 3},
+				Week:   []uint{1},
 				Local:  time.Local},
 			args: struct{ t time.Time }{now},
 		},

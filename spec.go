@@ -1,7 +1,6 @@
 package gocron
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -44,7 +43,6 @@ func (s *spec) delayTime(t time.Time) time.Time {
 	ok := false
 
 	t = s.timeTailoring(t)
-	fmt.Println(t)
 
 SECOND:
 	// second
